@@ -169,3 +169,31 @@ exports.handler = async (event, context) => {
 ```
 </p>
 </details>
+
+<!-- JWT -->
+<details><summary><b>JWT</b></summary>
+<p>
+
+### Description
+Handles JWT tokens decoding and validations.
+
+### Setup
+The JWT helper has inbuilt functions that take a JWT token to manage their data.
+#### file.js
+```js
+const { JWT } = require('ls-lambda-helpers');
+
+exports.handler = async (event, context) => { 
+  const token = JSON.parse(event.body);
+  
+  // DECODE: Decodes the info inside a token.
+  const decodedToken = JWT.decode(token);
+
+  // HAS EXPIRED: Tells if a token has expired.
+  const isExpired = JWT.hasExpired(token);
+  // You can pass the decoded token to this method if you already did it before.
+  const isExpiredFromString = JWT.decodedTokenHasExpired(decodedToken);
+}
+```
+</p>
+</details>
