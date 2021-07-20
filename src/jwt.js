@@ -12,15 +12,18 @@ const decode = (token) => {
   return decodedToken;
 }
 
-const hasExpired = (token) => {
-  const { exp } = decode(token);
+const decodedTokenHasExpired = (decodedToken) => {
+  const { exp } = decodedToken;
 
   const expirationDate = new Date(exp * 1000);
 
   return new Date() > expirationDate;
 }
 
+const hasExpired = (token) => decodedTokenHasExpired(decode(token));
+
 module.exports = {
   decode,
+  decodedTokenHasExpired,
   hasExpired
 };
