@@ -5,5 +5,6 @@ const Secrets = require('./src/secretsHelper');
 const Encryption = require('./src/encryption');
 const DDQ = require('./src/ddqAuth');
 const Okta = require('./src/okta')
+const JWT = require('./src/jwt');
 
-module.exports = {Logger, Response, Encryption, SFMC, Secrets, DDQ, Okta};
+module.exports = {Logger, Response, Encryption, SFMC, Secrets, DDQ, Okta, JWT};
