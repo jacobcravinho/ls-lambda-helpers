@@ -93,6 +93,8 @@ Retrieves AWS Secret by name.  Secret must be in json (key: value) format.
 
 ### Setup
 Create a new secret in Secrets Manager and record the name.
+- getSecret({secretName})
+- putSecret({secretName, secretValue})
 #### file.js
 ```js
 const { Secrets } = require('ls-lambda-helpers');
