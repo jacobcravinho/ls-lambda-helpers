@@ -11,5 +11,14 @@ const getSecret = async secretName => {
     }
 }
 
+const putSecret = async (secretName, secretValue) => {
+    try {
+      const res = await client.putSecretValue({ SecretId: secretName, SecretString: secretValue}).promise();
+      return res
+    } catch (err) {
+      console.error(err);
+      return 'ERROR';
+    }
+  }
 
-module.exports = {getSecret};
+module.exports = {getSecret, putSecret};
