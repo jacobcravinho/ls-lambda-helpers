@@ -22,7 +22,7 @@
   "dependencies": {
     "crypto": "^1.0.1",
     "fetch": "^1.1.0",
-    "node-fetch": "^2.6.1"
+    "node-fetch": "^2.6.2"
   },
   "devDependencies": {
     "aws-sdk": "^2.918.0"
