@@ -27,7 +27,16 @@ class Logger {
 
     if (!logLevel) throw new Error('No log level specified in the environment');
 
-    return this.#logLevelMap[logLevel.toLowerCase()];
+    const logLevelValue = this.#logLevelMap[logLevel.toLowerCase()];
+
+    if (!logLevelValue)
+      throw new Error(
+        `Invalid log level ${logLevel}. Valid values are: ${Object.keys(
+          this.#logLevelMap,
+        ).join(', ')}`,
+      );
+
+    return logLevelValue;
   }
 
   #formatMessage(message) {
