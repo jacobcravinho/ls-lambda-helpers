@@ -16,7 +16,7 @@ class Logger {
   constructor() {
     const stage = process.env.stage || process.env.STAGE;
 
-    if (!stage) throw new Error('No stage specified');
+    if (!stage) throw new Error('No stage specified in the environment');
 
     this.#isProduction = stage.toLowerCase().startsWith('prod');
     this.#logLevel = this.#setLogLevel();
@@ -25,7 +25,7 @@ class Logger {
   #setLogLevel() {
     const logLevel = process.env.logLevel || process.env.LOG_LEVEL;
 
-    if (!logLevel) throw new Error('No log level specified');
+    if (!logLevel) throw new Error('No log level specified in the environment');
 
     return this.#logLevelMap[logLevel.toLowerCase()];
   }
@@ -40,7 +40,7 @@ class Logger {
    * @param  {...any} message Message to log, can be anything that can be stringified.
    */
   debug(...message) {
-    if (this.logLevel < 3) return;
+    if (this.#logLevel < 3) return;
 
     console.debug(this.#formatMessage(message));
   }
@@ -54,7 +54,7 @@ class Logger {
    * @param {...any} message Message to log, can be anything.
    */
   debugNoStringify(label, ...message) {
-    if (this.logLevel < 3) return;
+    if (this.#logLevel < 3) return;
 
     console.debug(label, message);
   }
@@ -65,7 +65,7 @@ class Logger {
    * @param  {...any} message Message to log, can be anything that can be stringified.
    */
   info(...message) {
-    if (this.logLevel < 2) return;
+    if (this.#logLevel < 2) return;
 
     console.info(this.#formatMessage(message));
   }
@@ -77,7 +77,7 @@ class Logger {
    * @param  {...any} message Message to log, can be anything that can be stringified.
    */
   error(...message) {
-    if (this.logLevel < 1) return;
+    if (this.#logLevel < 1) return;
 
     if (message instanceof Error) console.error(message);
     else console.error(this.#formatMessage(message));
@@ -99,7 +99,7 @@ class Logger {
    * @param  {...any} message Message to log, can be anything that can be stringified.
    */
   log(...message) {
-    if (this.isProduction) return;
+    if (this.#isProduction) return;
 
     console.log(this.#formatMessage(message));
   }
