@@ -54,13 +54,24 @@ describe('response instance succeeded', () => {
       true,
     );
   });
+
+  it('should execute fail method once when try/catch fails', () => {
+    // Cyclic dependency will throw exception in JSON.stringify()
+    const obj = {};
+    obj.prop = obj;
+
+    const responseInstance = new Response(obj);
+    responseInstance.fail = jest.fn();
+    responseInstance.success();
+    expect(responseInstance.fail).toHaveBeenCalledTimes(1);
+  });
 });
 
 describe('response static succeeded', () => {
-  it('should display provided object message in body of success response (stringified)', () => {
-    const stringifiedMessage = stringifyMessage(MESSAGE.object);
+  it('should return the same in static and instance', () => {
     const response = Response.success(MESSAGE.object);
-    expect(response.body).toStrictEqual(stringifiedMessage);
+    const responseInstance = new Response(MESSAGE.object).success();
+    expect(response).toStrictEqual(responseInstance);
   });
 });
 
@@ -91,15 +102,9 @@ describe('response instance failed', () => {
 });
 
 describe('response static failed', () => {
-  it('should display provided string message in body of failed response (stringified)', () => {
-    const stringifiedMessage = stringifyMessage({ error: MESSAGE.string });
-    const response = Response.fail(MESSAGE.string);
-    expect(response.body).toStrictEqual(stringifiedMessage);
-  });
-
-  it('should display provided object message in body of failed response (stringified)', () => {
-    const stringifiedMessage = stringifyError(MESSAGE.object);
+  it('should return the same in static and instance', () => {
     const response = Response.fail(MESSAGE.object);
-    expect(response.body).toStrictEqual(stringifiedMessage);
+    const responseInstance = new Response(MESSAGE.object).fail();
+    expect(response).toStrictEqual(responseInstance);
   });
 });
