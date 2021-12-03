@@ -99,6 +99,12 @@ describe('response instance failed', () => {
     const response = new Response(MESSAGE.object).fail();
     expect(response.body).toStrictEqual(stringifiedMessage);
   });
+
+  it('should return error message inside body.error when an Error instance is provided and body is JSON parsed', () => {
+    const response = new Response(new Error('Test error')).fail();
+    const { error } = JSON.parse(response.body);
+    expect(error).toContain('Test error');
+  });
 });
 
 describe('response static failed', () => {
