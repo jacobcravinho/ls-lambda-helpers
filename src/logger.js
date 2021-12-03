@@ -72,7 +72,7 @@ class Logger {
   error(...message) {
     if (this.#logLevel < 1) return;
 
-    if (message instanceof Error) console.error(message);
+    if (message[0] instanceof Error) console.error(message[0]);
     else console.error(this.#formatMessage(message));
   }
 
@@ -89,12 +89,17 @@ class Logger {
    * Used to log a message to the console when any log level is enabled.
    * Doesn't works if production environment is enabled.
    *
-   * @param  {...any} message Message to log, can be anything that can be stringified.
+   * @param {any} message Message to log, can be anything that can be stringified.
+   * @param {...any} [extraMessages] Extra messages to be logged.
    */
   log(...message) {
     if (this.#isProduction) return;
 
     console.log(this.#formatMessage(message));
+  }
+
+  #formatMessage(message) {
+    return `${this.#stackName.toUpperCase()}: ${JSON.stringify(message)}`;
   }
 
   #defineAttributes() {
@@ -131,10 +136,6 @@ class Logger {
       throw new Error('No stack name specified in the environment');
 
     return stackName;
-  }
-
-  #formatMessage(message) {
-    return `${this.#stackName.toUpperCase()}: ${JSON.stringify(message)}`;
   }
 }
 
