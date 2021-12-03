@@ -21,7 +21,6 @@
   "homepage": "https://github.com/jacobcravinho/ls-lambda-helpers#readme",
   "dependencies": {
     "crypto": "^1.0.1",
-    "fetch": "^1.1.0",
     "node-fetch": "^2.6.1"
   },
   "devDependencies": {
