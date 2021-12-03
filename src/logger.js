@@ -2,8 +2,16 @@
  * Log messages to the console in a consistent format.
  */
 class Logger {
+  /** True when `STAGE` defined as `prod` in `.env` file. False else. */
   #isProduction = false;
-  #logLevel = 3;
+
+  /** Stack name defined in `.env` file as `STACK_NAME`. */
+  #stackName = '';
+
+  /** Log level defined in `.env` as `LOG_LEVEL`. */
+  #logLevel = 0;
+
+  /** Defined when Logger is instantiated. It will log only if log type is defined then. */
   #logLevelMap = {
     error: 1,
     info: 2,
@@ -12,35 +20,11 @@ class Logger {
 
   /**
    * Create a new Logger instance.
+   * Needs environment variables `STAGE`, `STACK_NAME` and `LOG_LEVEL` to be defined in
+   * `.env` file, else will throw an error.
    */
   constructor() {
-    const stage = process.env.stage || process.env.STAGE;
-
-    if (!stage) throw new Error('No stage specified in the environment');
-
-    this.#isProduction = stage.toLowerCase().startsWith('prod');
-    this.#logLevel = this.#setLogLevel();
-  }
-
-  #setLogLevel() {
-    const logLevel = process.env.logLevel || process.env.LOG_LEVEL;
-
-    if (!logLevel) throw new Error('No log level specified in the environment');
-
-    const logLevelValue = this.#logLevelMap[logLevel.toLowerCase()];
-
-    if (!logLevelValue)
-      throw new Error(
-        `Invalid log level ${logLevel}. Valid values are: ${Object.keys(
-          this.#logLevelMap,
-        ).join(', ')}`,
-      );
-
-    return logLevelValue;
-  }
-
-  #formatMessage(message) {
-    return `${process.env.stackName.toUpperCase()}: ${JSON.stringify(message)}`;
+    this.#defineAttributes();
   }
 
   /**
@@ -111,6 +95,46 @@ class Logger {
     if (this.#isProduction) return;
 
     console.log(this.#formatMessage(message));
+  }
+
+  #defineAttributes() {
+    const stage = process.env.stage || process.env.STAGE;
+
+    if (!stage) throw new Error('No stage specified in the environment');
+
+    this.#isProduction = stage.toLowerCase().startsWith('prod');
+    this.#logLevel = this.#getLogLevel();
+    this.#stackName = this.#getStackName();
+  }
+
+  #getLogLevel() {
+    const logLevel = process.env.logLevel || process.env.LOG_LEVEL;
+
+    if (!logLevel) throw new Error('No log level specified in the environment');
+
+    const logLevelValue = this.#logLevelMap[logLevel.toLowerCase()];
+
+    if (!logLevelValue)
+      throw new Error(
+        `Invalid log level: '${logLevel}'. Valid values are: ${Object.keys(
+          this.#logLevelMap,
+        ).join(', ')}`,
+      );
+
+    return logLevelValue;
+  }
+
+  #getStackName() {
+    const stackName = process.env.stackName || process.env.STACK_NAME;
+
+    if (!stackName)
+      throw new Error('No stack name specified in the environment');
+
+    return stackName;
+  }
+
+  #formatMessage(message) {
+    return `${this.#stackName.toUpperCase()}: ${JSON.stringify(message)}`;
   }
 }
 
