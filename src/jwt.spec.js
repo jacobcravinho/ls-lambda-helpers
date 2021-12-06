@@ -1,4 +1,4 @@
-const { decode, decodedTokenHasExpired, hasExpired } = require('./jwt');
+const JWT = require('./jwt');
 
 // Was used jwt.io to generate tokens
 describe('jwt', () => {
@@ -17,18 +17,18 @@ describe('jwt', () => {
   });
   describe('jwt decode', () => {
     it('should decode an encoded token', () => {
-      const decoded = decode(encodedToken);
+      const decoded = JWT.decode(encodedToken);
       expect(decoded).toStrictEqual(decodedToken);
     });
 
     it('should throw an error if token is not valid', () => {
-      expect(() => decode('invalid')).toThrowError(/Invalid JWT/);
+      expect(() => JWT.decode('invalid')).toThrowError(/Invalid JWT/);
     });
   });
 
   describe('jwt decodedTokenHasExpired', () => {
     it('should return true if decoded token has expired', () => {
-      const isExpired = decodedTokenHasExpired(decodedToken);
+      const isExpired = JWT.decodedTokenHasExpired(decodedToken);
       expect(isExpired).toBe(true);
     });
 
@@ -36,24 +36,26 @@ describe('jwt', () => {
       // Decoded JWT token expires in many years (2121-11-12)
       decodedToken.exp = new Date().getTime() / 1000 + 100 * 365 * 24 * 60 * 60;
 
-      const isExpired = decodedTokenHasExpired(decodedToken);
+      const isExpired = JWT.decodedTokenHasExpired(decodedToken);
       expect(isExpired).toBe(false);
     });
 
     it('should throw an error when no expiration date is provided in decoded token', () => {
-      expect(() => decodedTokenHasExpired({})).toThrowError(/expiration date/);
+      expect(() => JWT.decodedTokenHasExpired({})).toThrowError(
+        /expiration date/,
+      );
     });
   });
 
   describe('jwt hasExpired', () => {
     it('should return true if token has expired', () => {
-      const isExpired = hasExpired(encodedToken);
+      const isExpired = JWT.hasExpired(encodedToken);
       expect(isExpired).toBe(true);
     });
 
     it('should return false if token has not expired', () => {
       // JWT Token expires in many years (2263-04-27)
-      const isExpired = hasExpired(
+      const isExpired = JWT.hasExpired(
         'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiZXhwIjo5MjU2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c',
       );
 
@@ -63,7 +65,7 @@ describe('jwt', () => {
     it('should throw an error when no expiration date is provided in encoded token', () => {
       // { "sub": "1234567890", "name": "John Doe" }
       expect(() =>
-        hasExpired(
+        JWT.hasExpired(
           'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIn0.Gfx6VO9tcxwk6xqx9yYzSfebfeakZp5JYIgP_edcw_A',
         ),
       ).toThrowError(/expiration date/);
